@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Briefly | 나만의 맞춤형 뉴스 리더</title>
+  <meta name="description" content="비즈니스, 증권, IT, 스포츠, 문화 중 관심 있는 주제를 선택하면 최신 헤드라인을 깔끔한 카드 피드로 모아 보여주는 맞춤형 뉴스 리더입니다.">
+  <meta name="theme-color" content="#F6F7F9">
+
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <a class="skip-link" href="#newsGrid">본문 바로가기</a>
+
+  <!-- Header -->
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="brand" href="./" aria-label="Briefly 홈">
+        <span class="brand-mark" data-icon="logo" data-size="20"></span>
+        <span class="brand-name">Briefly</span>
+      </a>
+      <button id="modeBtn" class="mode-btn" type="button" aria-haspopup="dialog" aria-controls="settingsModal">
+        <span class="mode-dot" aria-hidden="true"></span>
+        <span id="modeLabel">데모 모드</span>
+        <span class="mode-key" data-icon="key" data-size="14"></span>
+      </button>
+    </div>
+  </header>
+
+  <main>
+    <!-- Hero + Topic selector -->
+    <section class="hero" aria-labelledby="pageTitle">
+      <div class="container">
+        <p class="eyebrow">Personalized News</p>
+        <h1 id="pageTitle" class="hero-title">오늘의 뉴스를<br class="br-mobile"> 나에게 맞게</h1>
+        <p class="hero-sub">관심 있는 주제를 고르면 주제별 최신 헤드라인을 한곳에 모아 드립니다.</p>
+
+        <form id="topicForm" class="topic-panel" novalidate>
+          <fieldset class="topic-fieldset">
+            <div class="topic-head">
+              <legend class="topic-legend">주제 선택</legend>
+            </div>
+            <div id="topicChips" class="chips" role="group" aria-label="뉴스 주제"></div>
+          </fieldset>
+
+          <div class="topic-actions">
+            <p id="selectionHint" class="selection-hint" aria-live="polite">주제를 하나 이상 선택하세요</p>
+            <button id="viewNewsBtn" class="btn-primary" type="submit" disabled>
+              <span class="btn-label">뉴스 보기</span>
+              <span class="btn-icon" data-icon="arrowRight" data-size="18"></span>
+              <span class="btn-spinner" data-icon="spinner" data-size="18"></span>
+            </button>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <!-- Feed -->
+    <section class="feed" aria-label="뉴스 피드">
+      <div class="container">
+        <div id="emptyState" class="empty-state">
+          <span class="empty-icon" data-icon="layers" data-size="26"></span>
+          <h2 class="empty-title">아직 표시할 뉴스가 없습니다</h2>
+          <p class="empty-desc">위에서 관심 주제를 선택하고 <strong>뉴스 보기</strong>를 눌러 주세요.</p>
+        </div>
+
+        <div id="results" class="results" hidden>
+          <div class="results-bar">
+            <div class="results-info">
+              <h2 class="results-title">헤드라인 <span id="resultsCount" class="results-count">0건</span></h2>
+              <div id="resultsTopics" class="results-topics"></div>
+            </div>
+            <button id="refreshBtn" class="icon-text-btn" type="button">
+              <span data-icon="refresh" data-size="15"></span>
+              새로고침
+            </button>
+          </div>
+
+          <div id="newsGrid" class="news-grid" aria-live="polite" aria-busy="false"></div>
+          <div id="feedSentinel" class="feed-sentinel" aria-hidden="true"></div>
+          <div id="feedStatus" class="feed-status" role="status"></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p>Briefly &middot; 뉴스 데이터 제공 NewsData.io &middot; 기사 저작권은 각 언론사에 있습니다.</p>
+    </div>
+  </footer>
+
+  <!-- Article modal -->
+  <dialog id="articleModal" class="modal" aria-labelledby="modalTitle">
+    <div class="modal-panel">
+      <button id="modalCloseBtn" class="modal-close" type="button" aria-label="닫기" data-close></button>
+      <div class="modal-scroll">
+        <div id="modalMedia" class="modal-media"></div>
+        <div class="modal-content">
+          <div id="modalMeta" class="modal-meta"></div>
+          <h2 id="modalTitle" class="modal-title"></h2>
+          <div id="modalBody" class="modal-body"></div>
+          <p class="modal-note">본문은 뉴스 API가 제공하는 요약입니다. 전체 기사는 원문에서 확인하세요.</p>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-ghost" type="button" data-close>닫기</button>
+        <a id="modalSourceLink" class="btn-primary btn-primary--sm" target="_blank" rel="noopener noreferrer">원문 보기</a>
+      </div>
+    </div>
+  </dialog>
+
+  <!-- Settings modal -->
+  <dialog id="settingsModal" class="modal modal--sm" aria-labelledby="settingsTitle">
+    <form id="settingsForm" class="modal-panel settings-panel">
+      <div class="settings-head">
+        <span class="settings-icon" data-icon="key" data-size="18"></span>
+        <h2 id="settingsTitle" class="settings-title">API 키 설정</h2>
+      </div>
+      <p class="settings-desc">
+        <a href="https://newsdata.io/register" target="_blank" rel="noopener noreferrer">NewsData.io</a>에서 무료로 발급받은 API 키를 입력하면 실시간 뉴스를 불러옵니다.
+        키는 이 브라우저에만 저장됩니다. 키가 없으면 데모 데이터로 동작합니다.
+      </p>
+      <label class="field-label" for="apiKeyInput">API Key</label>
+      <input id="apiKeyInput" class="field-input" type="password" autocomplete="off" spellcheck="false" placeholder="pub_xxxxxxxxxxxxxxxx">
+      <div class="settings-actions">
+        <button id="clearKeyBtn" class="text-btn text-btn--muted" type="button">키 삭제</button>
+        <div class="settings-actions-right">
+          <button class="btn-ghost" type="button" data-close>취소</button>
+          <button id="saveKeyBtn" class="btn-primary btn-primary--sm" type="submit">저장</button>
+        </div>
+      </div>
+    </form>
+  </dialog>
+
+  <div id="toastRegion" class="toast-region" aria-live="polite"></div>
+
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
